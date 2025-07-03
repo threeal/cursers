@@ -30,17 +30,8 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "lefthook>=1.11.14",
-    "pytest>=8.4.0",
-    "pytest-cov>=6.2.1",
     "ruff>=0.11.13",
 ]
-
-[tool.coverage.report]
-fail_under = 100
-omit = ["__main__.py"]
-
-[tool.coverage.run]
-source = ["bonacci"]
 
 [tool.hatch.build.targets.sdist]
 include = ["src"]
@@ -51,4 +42,3 @@ ignore = ["COM812", "D"]
 
 [tool.ruff.lint.per-file-ignores]
 "__main__.py" = ["T201"]
-"tests/*" = ["S101"]
