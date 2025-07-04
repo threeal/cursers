@@ -1,26 +1,30 @@
 [project]
-name = "bonacci"
-version = "0.0.0"
+name = "cursers"
+version = "0.1.0"
 dependencies = []
 requires-python = ">=3.13"
 authors = [
-    {name = "Leonardo Bonacci", email = "leonardo@bonacci.com"},
+    {name = "Alfi Maulana", email = "alfi.maulana.f@gmail.com"},
 ]
-description = "An example Python project for generating a Fibonacci sequence"
+description = "A minimal threaded wrapper for Python curses "
 readme = "README.md"
-license = "Unlicense"
-keywords = ["example", "fibonacci"]
+license = "MIT"
+keywords = ["curses", "terminal", "tui", "threading", "wrapper"]
 classifiers = [
     "Development Status :: 1 - Planning",
+    "Environment :: Console",
+    "Environment :: Console :: Curses",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Terminals",
 ]
 
-[project.scripts]
-bonacci = "bonacci.__main__:main"
-
 [project.urls]
-repository = "https://github.com/leonardo/bonacci.git"
-issues = "https://github.com/leonardo/bonacci/issues"
+repository = "https://github.com/threeal/cursers.git"
+issues = "https://github.com/threeal/cursers/issues"
 
 [build-system]
 requires = ["hatchling"]
@@ -29,17 +33,8 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "lefthook>=1.11.14",
-    "pytest>=8.4.0",
-    "pytest-cov>=6.2.1",
     "ruff>=0.11.13",
 ]
-
-[tool.coverage.report]
-fail_under = 100
-omit = ["__main__.py"]
-
-[tool.coverage.run]
-source = ["bonacci"]
 
 [tool.hatch.build.targets.sdist]
 include = ["src"]
@@ -47,7 +42,3 @@ include = ["src"]
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = ["COM812", "D"]
-
-[tool.ruff.lint.per-file-ignores]
-"__main__.py" = ["T201"]
-"tests/*" = ["S101"]
