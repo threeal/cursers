@@ -1,5 +1,3 @@
-import time
-
 import cursers
 
 KEY_ESC = 27
@@ -45,4 +43,3 @@ if __name__ == "__main__":
     with MoveControlApp() as app:
         while app.is_running():
             app.update()
-            time.sleep(1 / 30)

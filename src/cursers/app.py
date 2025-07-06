@@ -1,9 +1,11 @@
 import curses
+import time
 from typing import Self
 
 
 class App:
-    def __init__(self) -> None:
+    def __init__(self, *, fps: int = 30) -> None:
+        self._fps = fps
         self._is_running = False
 
     def __enter__(self) -> Self:
@@ -29,6 +31,7 @@ class App:
         if self._is_running:
             self.on_update()
             self.stdscr.refresh()
+            time.sleep(1 / self._fps)
 
     def exit(self) -> None:
         self._is_running = False
