@@ -1,4 +1,3 @@
-import curses
 import time
 
 from cursers import App
@@ -11,15 +10,15 @@ if __name__ == "__main__":
         x = 0
 
         title = "Movement Control"
-        app.stdscr.addstr(0, (29 - len(title)) // 2, title, curses.A_BOLD)
+        app.draw_text(0, (29 - len(title)) // 2, title, bold=True)
 
-        app.stdscr.addstr(3, 2, f"X coordinate: {x:12}")
-        app.stdscr.addstr(4, 2, f"Y coordinate: {y:12}")
+        app.draw_text(3, 2, f"X coordinate: {x:12}")
+        app.draw_text(4, 2, f"Y coordinate: {y:12}")
 
-        app.stdscr.addstr(7, 2, "Keyboard Controls:", curses.A_BOLD)
-        app.stdscr.addstr(8, 4, "W/S - Move up/down")
-        app.stdscr.addstr(9, 4, "A/D - Move left/right")
-        app.stdscr.addstr(10, 4, "ESC - Exit app", curses.A_BOLD)
+        app.draw_text(7, 2, "Keyboard Controls:", bold=True)
+        app.draw_text(8, 4, "W/S - Move up/down")
+        app.draw_text(9, 4, "A/D - Move left/right")
+        app.draw_text(10, 4, "ESC - Exit app", bold=True)
 
         while True:
             key = app.stdscr.getch()
@@ -34,7 +33,7 @@ if __name__ == "__main__":
             elif key == ord("d"):
                 x += 1
 
-            app.stdscr.addstr(3, 16, f"{x:12}")
-            app.stdscr.addstr(4, 16, f"{y:12}")
+            app.draw_text(3, 16, f"{x:12}")
+            app.draw_text(4, 16, f"{y:12}")
 
             time.sleep(1 / 30)
