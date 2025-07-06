@@ -2,9 +2,12 @@ import curses
 import time
 from typing import Self
 
+from .thread import Thread
+
 
 class App:
     def __init__(self, *, fps: int = 30) -> None:
+        self.stdscr = None
         self._fps = fps
         self._is_running = False
 
@@ -51,4 +54,23 @@ class App:
         self.stdscr.addstr(y, x, text, attr)
 
 
-__all__ = ["App"]
+class ThreadedApp(App, Thread):
+    def __init__(self, *, fps: int = 30) -> None:
+        App.__init__(self, fps=fps)
+        Thread.__init__(self)
+
+    def __enter__(self) -> Self:
+        App.__enter__(self)
+        Thread.__enter__(self)
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        App.__exit__(self)
+        Thread.__exit__(self)
+
+    def run(self) -> None:
+        while self.is_running():
+            self.update()
+
+
+__all__ = ["App", "ThreadedApp"]

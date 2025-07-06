@@ -1,9 +1,14 @@
+import threading
+import time
+
 import cursers
 
 
-class MoveControlApp(cursers.App):
+class MoveControlApp(cursers.ThreadedApp):
     def __init__(self) -> None:
         super().__init__()
+
+        self.lock = threading.Lock()
         self.y = 0
         self.x = 0
 
@@ -20,24 +25,28 @@ class MoveControlApp(cursers.App):
         self.draw_text(10, 4, "ESC - Exit app", bold=True)
 
     def on_update(self, key: int) -> None:
-        match chr(key) if key != -1 else None:
-            case "\x1b":  # ESC
-                self.exit()
-                return
-            case "w" | "W":
-                self.y -= 1
-            case "s" | "S":
-                self.y += 1
-            case "a" | "A":
-                self.x -= 1
-            case "d" | "D":
-                self.x += 1
+        with self.lock:
+            match chr(key) if key != -1 else None:
+                case "\x1b":  # ESC
+                    self.exit()
+                    return
+                case "w" | "W":
+                    self.y -= 1
+                case "s" | "S":
+                    self.y += 1
+                case "a" | "A":
+                    self.x -= 1
+                case "d" | "D":
+                    self.x += 1
 
-        self.draw_text(3, 16, f"{self.x:12}")
-        self.draw_text(4, 16, f"{self.y:12}")
+            self.draw_text(3, 16, f"{self.x:12}")
+            self.draw_text(4, 16, f"{self.y:12}")
 
 
 if __name__ == "__main__":
     with MoveControlApp() as app:
         while app.is_running():
-            app.update()
+            with app.lock:
+                app.y += 1
+
+            time.sleep(1)
