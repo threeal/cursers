@@ -1,3 +1,5 @@
+"""Cursers: A minimal threaded wrapper for Python curses."""
+
 from .app import App, ThreadedApp
 from .thread import Thread
 
