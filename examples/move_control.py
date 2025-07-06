@@ -1,7 +1,5 @@
 import cursers
 
-KEY_ESC = 27
-
 
 class MoveControlApp(cursers.App):
     def __init__(self) -> None:
@@ -21,19 +19,19 @@ class MoveControlApp(cursers.App):
         self.draw_text(9, 4, "A/D - Move left/right")
         self.draw_text(10, 4, "ESC - Exit app", bold=True)
 
-    def on_update(self) -> None:
-        key = self.stdscr.getch()
-        if key == KEY_ESC:
-            self.exit()
-            return
-        if key == ord("w"):
-            self.y -= 1
-        elif key == ord("s"):
-            self.y += 1
-        elif key == ord("a"):
-            self.x -= 1
-        elif key == ord("d"):
-            self.x += 1
+    def on_update(self, key: int) -> None:
+        match chr(key) if key is not -1 else None:
+            case "\x1b":  # ESC
+                self.exit()
+                return
+            case "w" | "W":
+                self.y -= 1
+            case "s" | "S":
+                self.y += 1
+            case "a" | "A":
+                self.x -= 1
+            case "d" | "D":
+                self.x += 1
 
         self.draw_text(3, 16, f"{self.x:12}")
         self.draw_text(4, 16, f"{self.y:12}")

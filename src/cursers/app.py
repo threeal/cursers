@@ -29,7 +29,8 @@ class App:
 
     def update(self) -> None:
         if self._is_running:
-            self.on_update()
+            key = self.stdscr.getch()
+            self.on_update(key)
             self.stdscr.refresh()
             time.sleep(1 / self._fps)
 
@@ -39,7 +40,7 @@ class App:
     def on_enter(self) -> None:
         pass
 
-    def on_update(self) -> None:
+    def on_update(self, key: int) -> None:
         pass
 
     def on_exit(self) -> None:
