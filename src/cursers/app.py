@@ -74,7 +74,9 @@ class App:
     def on_exit(self) -> None:
         """Handle application exit from the context."""
 
-    def draw_text(self, y: int, x: int, text: str, *, bold: bool = False) -> None:
+    def draw_text(
+        self, y: int, x: int, text: str, *, bold: bool = False, underline: bool = False
+    ) -> None:
         """Draw text to the screen at the specified position.
 
         Args:
@@ -82,9 +84,15 @@ class App:
             x: Column position.
             text: Text to draw.
             bold: Whether to draw in bold style.
+            underline: Whether to draw in underline style.
 
         """
-        attr = curses.A_BOLD if bold else curses.A_NORMAL
+        attr = curses.A_NORMAL
+        if bold:
+            attr |= curses.A_BOLD
+        if underline:
+            attr |= curses.A_UNDERLINE
+
         self.stdscr.addstr(y, x, text, attr)
 
 
