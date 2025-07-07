@@ -22,14 +22,14 @@ class App:
             fps: Target frames per second for the update loop.
 
         """
-        self.stdscr = None
+        self._stdscr = None
         self._fps = fps
         self._is_running = False
 
     def __enter__(self) -> Self:
         """Enter the application context and initialize curses."""
-        self.stdscr = curses.initscr()
-        self.stdscr.nodelay(True)  # noqa: FBT003
+        self._stdscr = curses.initscr()
+        self._stdscr.nodelay(True)  # noqa: FBT003
         curses.curs_set(0)
         curses.noecho()
 
@@ -51,9 +51,9 @@ class App:
     def update(self) -> None:
         """Update the application state and handle input."""
         if self._is_running:
-            key = self.stdscr.getch()
+            key = self._stdscr.getch()
             self.on_update(key)
-            self.stdscr.refresh()
+            self._stdscr.refresh()
             time.sleep(1 / self._fps)
 
     def exit(self) -> None:
@@ -93,7 +93,7 @@ class App:
         if underline:
             attr |= curses.A_UNDERLINE
 
-        self.stdscr.addstr(y, x, text, attr)
+        self._stdscr.addstr(y, x, text, attr)
 
 
 class ThreadedApp(App, Thread):
