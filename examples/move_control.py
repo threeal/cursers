@@ -8,8 +8,7 @@ class MoveControlApp(cursers.App):
         self.x = 0
 
     def on_enter(self) -> None:
-        title = "Movement Control"
-        self.draw_text(0, (29 - len(title)) // 2, title, bold=True)
+        self.draw_text(0, 7, "Movement Control", bold=True, underline=True)
 
         self.draw_text(3, 2, f"X coordinate: {self.x:12}")
         self.draw_text(4, 2, f"Y coordinate: {self.y:12}")
