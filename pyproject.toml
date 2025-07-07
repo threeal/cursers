@@ -4,22 +4,22 @@ version = "0.1.0"
 dependencies = []
 requires-python = ">=3.13"
 authors = [
-    {name = "Alfi Maulana", email = "alfi.maulana.f@gmail.com"},
+  { name = "Alfi Maulana", email = "alfi.maulana.f@gmail.com" },
 ]
 description = "A minimal threaded wrapper for Python curses "
 readme = "README.md"
 license = "MIT"
 keywords = ["curses", "terminal", "tui", "threading", "wrapper"]
 classifiers = [
-    "Development Status :: 1 - Planning",
-    "Environment :: Console",
-    "Environment :: Console :: Curses",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.13",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Terminals",
+  "Development Status :: 1 - Planning",
+  "Environment :: Console",
+  "Environment :: Console :: Curses",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Terminals",
 ]
 
 [project.urls]
@@ -32,8 +32,8 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "lefthook>=1.11.14",
-    "ruff>=0.11.13",
+  "lefthook>=1.11.14",
+  "ruff>=0.11.13",
 ]
 
 [tool.hatch.build.targets.sdist]

@@ -8,7 +8,7 @@ pre-commit:
       run: uv run ruff format
 
     - name: fix lint
-      run: uv run ruff check --fix
+      run: dprint fmt
 
     - name: check diff
       run: git diff --exit-code uv.lock {staged_files}
