@@ -5,10 +5,10 @@ pre-commit:
       run: uv sync
 
     - name: fix formatting
-      run: uv run ruff format
+      run: dprint fmt
 
     - name: fix lint
-      run: dprint fmt
+      run: uv run ruff check --fix
 
     - name: check diff
       run: git diff --exit-code uv.lock {staged_files}
