@@ -45,6 +45,7 @@ include = ["src"]
 [tool.pydoctor]
 add-package = ["src/cursers"]
 docformat = "google"
+project-url = "https://pypi.org/project/cursers/"
 theme = "readthedocs"
 warnings-as-errors = true
 
