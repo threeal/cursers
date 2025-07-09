@@ -7,7 +7,7 @@ authors = [
   { name = "Alfi Maulana", email = "alfi.maulana.f@gmail.com" },
 ]
 description = "A minimal threaded wrapper for Python curses "
-readme = "README.md"
+readme = "README-pypi.md"
 license = "MIT"
 keywords = ["curses", "terminal", "tui", "threading", "wrapper"]
 classifiers = [
