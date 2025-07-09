@@ -23,7 +23,9 @@ classifiers = [
 ]
 
 [project.urls]
+homepage = "https://pypi.org/project/cursers/"
 repository = "https://github.com/threeal/cursers.git"
+documentation = "https://threeal.github.io/cursers/"
 issues = "https://github.com/threeal/cursers/issues"
 
 [build-system]
@@ -43,6 +45,7 @@ include = ["src"]
 [tool.pydoctor]
 add-package = ["src/cursers"]
 docformat = "google"
+project-url = "https://pypi.org/project/cursers/"
 theme = "readthedocs"
 warnings-as-errors = true
 
