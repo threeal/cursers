@@ -3,7 +3,7 @@ import cursers
 
 class MoveControlApp(cursers.App):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(keypad=True)
         self.y = 0
         self.x = 0
 

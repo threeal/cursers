@@ -24,15 +24,17 @@ class App:
     with configurable FPS, and offers lifecycle hooks for application logic.
     """
 
-    def __init__(self, *, fps: int = 30) -> None:
+    def __init__(self, *, fps: int = 30, keypad: bool = False) -> None:
         """Initialize the application.
 
         Args:
             fps: Target frames per second (default: 30).
+            keypad: Whether to enable arrow keys (default: False).
 
         """
         self._stdscr = None
         self._fps = fps
+        self._keypad = keypad
         self._is_running = False
 
     def __enter__(self) -> Self:
@@ -44,6 +46,9 @@ class App:
         """
         self._stdscr = curses.initscr()
         self._stdscr.nodelay(True)  # noqa: FBT003
+        if self._keypad:
+            self._stdscr.keypad(True)  # noqa: FBT003
+
         curses.curs_set(0)
         curses.noecho()
 
@@ -191,14 +196,15 @@ class ThreadedApp(App, Thread):
     the background.
     """
 
-    def __init__(self, *, fps: int = 30) -> None:
+    def __init__(self, *, fps: int = 30, keypad: bool = False) -> None:
         """Initialize the threaded application.
 
         Args:
             fps: Target frames per second (default: 30).
+            keypad: Whether to enable arrow keys (default: False).
 
         """
-        App.__init__(self, fps=fps)
+        App.__init__(self, fps=fps, keypad=keypad)
         Thread.__init__(self)
 
     def __enter__(self) -> Self:
