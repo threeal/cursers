@@ -65,6 +65,8 @@ with MyThreadedApp() as app:
 
 ## API Reference
 
+For complete API documentation, visit the [project documentation](https://threeal.github.io/cursers/).
+
 ### App Class
 
 The main application class that provides a context manager for curses applications.
