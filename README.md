@@ -74,10 +74,11 @@ The main application class that provides a context manager for curses applicatio
 #### Constructor
 
 ```python
-App(fps=30)
+App(fps=30, keypad=False)
 ```
 
 - `fps`: Target frames per second (default: 30)
+- `keypad`: Whether to enable arrow keys and function keys (default: False)
 
 #### Methods
 
