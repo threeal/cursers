@@ -6,7 +6,7 @@ import cursers
 
 class MoveControlApp(cursers.ThreadedApp):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(keypad=True)
 
         self.lock = threading.Lock()
         self.y = 0
