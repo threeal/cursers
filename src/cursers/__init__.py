@@ -17,110 +17,38 @@ import time
 from typing import Self
 
 
-class App:
-    """The main application class that provides a context manager for curses apps.
+class Screen:
+    """Low-level screen management for curses applications.
 
-    The App class handles curses initialization and cleanup, provides an update loop
-    with configurable FPS, and offers lifecycle hooks for application logic.
+    Provides a wrapper around curses screen operations including initialization,
+    input handling, and display management.
     """
 
-    def __init__(self, *, fps: int = 30, keypad: bool = False) -> None:
-        """Initialize the application.
+    def __init__(self, *, keypad: bool = False) -> None:
+        """Initialize the screen.
 
         Args:
-            fps: Target frames per second (default: 30).
-            keypad: Whether to enable arrow keys (default: False).
-
-        """
-        self._stdscr = None
-        self._fps = fps
-        self._keypad = keypad
-        self._is_running = False
-
-    def __enter__(self) -> Self:
-        """Enter the application context and initialize curses.
-
-        Returns:
-            The application instance.
+            keypad: Whether to enable arrow keys and function keys (default: False).
 
         """
         self._stdscr = curses.initscr()
         self._stdscr.nodelay(True)  # noqa: FBT003
-        if self._keypad:
+
+        if keypad:
             self._stdscr.keypad(True)  # noqa: FBT003
 
-        curses.curs_set(0)
-        curses.noecho()
-
-        self.on_enter()
-        self._is_running = True
-
-        return self
-
-    def __exit__(self, *args: object) -> None:
-        """Exit the application context and cleanup curses.
-
-        Args:
-            *args: Exception information (unused).
-
-        """
-        self._is_running = False
-        self.on_exit()
-        curses.endwin()
-
-    def is_running(self) -> bool:
-        """Check if the application is currently running.
+    def get_key(self) -> int:
+        """Get the next key from the input buffer.
 
         Returns:
-            True if the application is running, False otherwise.
+            The key code, or -1 if no key is available.
 
         """
-        return self._is_running
+        return self._stdscr.getch()
 
-    def update(self) -> None:
-        """Update the application state and handle input.
-
-        Call this method in your main loop to update the application state
-        and handle keyboard input.
-        """
-        if self._is_running:
-            key = self._stdscr.getch()
-            self.on_update(key)
-            self._stdscr.refresh()
-            time.sleep(1 / self._fps)
-
-    def exit(self) -> None:
-        """Signal the application to exit.
-
-        Sets the running state to False, which will cause the application
-        to exit on the next update cycle.
-        """
-        self._is_running = False
-
-    def on_enter(self) -> None:
-        """Handle entering the application context.
-
-        Override this method in your subclass to perform initialization
-        tasks when the application starts.
-        """
-
-    def on_update(self, key: int) -> None:
-        """Handle frame updates with key input.
-
-        Override this method in your subclass to handle keyboard input
-        and update your application state.
-
-        Args:
-            key: Key code from getch(), or -1 if no key pressed.
-
-        """
-
-    def on_exit(self) -> None:
-        """Handle exiting the application context.
-
-        Override this method in your subclass to perform cleanup
-        tasks when the application exits.
-        """
+    def refresh(self) -> None:
+        """Refresh the screen to display pending changes."""
+        self._stdscr.refresh()
 
     def draw_text(
         self, y: int, x: int, text: str, *, bold: bool = False, underline: bool = False
@@ -142,6 +70,115 @@ class App:
             attr |= curses.A_UNDERLINE
 
         self._stdscr.addstr(y, x, text, attr)
+
+
+class App:
+    """The main application class that provides a context manager for curses apps.
+
+    The App class handles curses initialization and cleanup, provides an update loop
+    with configurable FPS, and offers lifecycle hooks for application logic.
+    """
+
+    def __init__(self, *, fps: int = 30, keypad: bool = False) -> None:
+        """Initialize the application.
+
+        Args:
+            fps: Target frames per second (default: 30).
+            keypad: Whether to enable arrow keys (default: False).
+
+        """
+        self._screen = None
+        self._fps = fps
+        self._keypad = keypad
+        self._is_running = False
+
+    def __enter__(self) -> Self:
+        """Enter the application context and initialize curses.
+
+        Returns:
+            The application instance.
+
+        """
+        self._screen = Screen(keypad=self._keypad)
+        curses.curs_set(0)
+        curses.noecho()
+
+        self.on_enter(self._screen)
+        self._is_running = True
+
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        """Exit the application context and cleanup curses.
+
+        Args:
+            *args: Exception information (unused).
+
+        """
+        self._is_running = False
+        self.on_exit(self._screen)
+        curses.endwin()
+
+    def is_running(self) -> bool:
+        """Check if the application is currently running.
+
+        Returns:
+            True if the application is running, False otherwise.
+
+        """
+        return self._is_running
+
+    def update(self) -> None:
+        """Update the application state and handle input.
+
+        Call this method in your main loop to update the application state
+        and handle keyboard input.
+        """
+        if self._is_running:
+            self.on_update(self._screen)
+            self._screen.refresh()
+            time.sleep(1 / self._fps)
+
+    def exit(self) -> None:
+        """Signal the application to exit.
+
+        Sets the running state to False, which will cause the application
+        to exit on the next update cycle.
+        """
+        self._is_running = False
+
+    def on_enter(self, screen: Screen) -> None:
+        """Handle entering the application context.
+
+        Override this method in your subclass to perform initialization
+        tasks when the application starts.
+
+        Args:
+            screen: The Screen instance for drawing and input handling.
+
+        """
+
+    def on_update(self, screen: Screen) -> None:
+        """Handle frame updates.
+
+        Override this method in your subclass to handle keyboard input
+        and update your application state.
+
+        Args:
+            screen: The Screen instance for drawing and input handling.
+
+        """
+
+    def on_exit(self, screen: Screen) -> None:
+        """Handle exiting the application context.
+
+        Override this method in your subclass to perform cleanup
+        tasks when the application exits.
+
+        Args:
+            screen: The Screen instance for drawing and input handling.
+
+        """
 
 
 class Thread:
@@ -238,4 +275,4 @@ class ThreadedApp(App, Thread):
             self.update()
 
 
-__all__ = ["App", "Thread", "ThreadedApp"]
+__all__ = ["App", "Screen", "Thread", "ThreadedApp"]

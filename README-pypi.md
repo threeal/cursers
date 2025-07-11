@@ -20,11 +20,12 @@ import cursers
 
 class MyApp(cursers.App):
     # Called when entering the application context
-    def on_enter(self):
-        self.draw_text(0, 0, "Hello, World!", bold=True)
+    def on_enter(self, screen):
+        screen.draw_text(0, 0, "Hello, World!", bold=True)
 
-    # Called each frame with the current key input
-    def on_update(self, key):
+    # Called each frame with screen object for input/drawing
+    def on_update(self, screen):
+        key = screen.get_key()
         if key == 27:  # ESC key
             self.exit()
 
@@ -43,10 +44,11 @@ import time
 
 
 class MyThreadedApp(cursers.ThreadedApp):
-    def on_enter(self):
-        self.draw_text(0, 0, "Running in background thread!")
+    def on_enter(self, screen):
+        screen.draw_text(0, 0, "Running in background thread!")
 
-    def on_update(self, key):
+    def on_update(self, screen):
+        key = screen.get_key()
         if key == 27:  # ESC key
             self.exit()
 
@@ -68,25 +70,25 @@ The main application class that provides a context manager for curses applicatio
 #### Constructor
 
 ```python
-App(fps=30)
+App(fps=30, keypad=False)
 ```
 
 - `fps`: Target frames per second (default: 30)
+- `keypad`: Whether to enable arrow keys and function keys (default: False)
 
 #### Methods
 
 - `is_running()`: Returns `True` if the application is running
 - `update()`: Updates the application state and handles input (call in main loop)
 - `exit()`: Signals the application to exit
-- `draw_text(y, x, text, bold=False, underline=False)`: Draw text at position
 
 #### Lifecycle Hooks
 
 Override these methods in your subclass:
 
-- `on_enter()`: Called when entering the context
-- `on_update(key)`: Called every frame with key input (-1 if no key pressed)
-- `on_exit()`: Called when exiting the context
+- `on_enter(screen)`: Called when entering the context
+- `on_update(screen)`: Called every frame
+- `on_exit(screen)`: Called when exiting the context
 
 ### ThreadedApp Class
 
@@ -94,8 +96,9 @@ Extends `App` to run the update loop in a separate thread.
 
 ```python
 class MyThreadedApp(cursers.ThreadedApp):
-    def on_update(self, key):
+    def on_update(self, screen):
         # Handle input and drawing
+        key = screen.get_key()
         pass
 
 
@@ -105,6 +108,16 @@ with MyThreadedApp() as app:
         # Main thread is free for other tasks
         time.sleep(0.1)
 ```
+
+### Screen Class
+
+Low-level screen management for curses applications. Provides direct access to curses screen operations.
+
+#### Methods
+
+- `get_key()`: Returns the next key code from input buffer (-1 if no key available)
+- `refresh()`: Refreshes the screen to display pending changes
+- `draw_text(y, x, text, bold=False, underline=False)`: Draw styled text at position
 
 ### Thread Class
 
