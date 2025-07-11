@@ -141,10 +141,9 @@ class App:
         Call this method in your main loop to update the application state
         and handle keyboard input.
         """
-        if not self._is_exit_requested:
-            self.on_update(self._screen)
-            self._screen.refresh()
-            time.sleep(1 / self._fps)
+        self.on_update(self._screen)
+        self._screen.refresh()
+        time.sleep(1 / self._fps)
 
     def on_enter(self, screen: Screen) -> None:
         """Handle entering the application context.
