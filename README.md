@@ -33,12 +33,12 @@ class MyApp(cursers.App):
     def on_update(self, screen):
         key = screen.get_key()
         if key == 27:  # ESC key
-            self.exit()
+            self.request_exit()
 
 
 # Run the application
 with MyApp() as app:
-    while app.is_running():
+    while not app.is_exit_requested():
         app.update()
 ```
 
@@ -56,12 +56,12 @@ class MyThreadedApp(cursers.ThreadedApp):
     def on_update(self, screen):
         key = screen.get_key()
         if key == 27:  # ESC key
-            self.exit()
+            self.request_exit()
 
 
 # Run in background thread
 with MyThreadedApp() as app:
-    while app.is_running():
+    while not app.is_exit_requested():
         time.sleep(0.1)  # Do other work
 ```
 
@@ -84,9 +84,9 @@ App(fps=30, keypad=False)
 
 #### Methods
 
-- `is_running()`: Returns `True` if the application is running
+- `request_exit()`: Requests the application to exit
+- `is_exit_requested()`: Returns `True` if exit has been requested
 - `update()`: Updates the application state and handles input (call in main loop)
-- `exit()`: Signals the application to exit
 
 #### Lifecycle Hooks
 
@@ -110,7 +110,7 @@ class MyThreadedApp(cursers.ThreadedApp):
 
 with MyThreadedApp() as app:
     # Update loop runs automatically in background thread
-    while app.is_running():
+    while not app.is_exit_requested():
         # Main thread is free for other tasks
         time.sleep(0.1)
 ```

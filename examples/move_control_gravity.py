@@ -29,7 +29,7 @@ class MoveControlApp(cursers.ThreadedApp):
             key = screen.get_key()
             match chr(key) if key != -1 else None:
                 case "\x1b":  # ESC
-                    self.exit()
+                    self.request_exit()
                     return
                 case "w" | "W":
                     self.y -= 1
@@ -46,7 +46,7 @@ class MoveControlApp(cursers.ThreadedApp):
 
 if __name__ == "__main__":
     with MoveControlApp() as app:
-        while app.is_running():
+        while app.is_exit_requested():
             with app.lock:
                 app.y += 1
 

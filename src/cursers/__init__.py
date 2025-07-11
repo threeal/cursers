@@ -90,7 +90,7 @@ class App:
         self._screen = None
         self._fps = fps
         self._keypad = keypad
-        self._is_running = False
+        self._is_exit_requested = False
 
     def __enter__(self) -> Self:
         """Enter the application context and initialize curses.
@@ -103,8 +103,8 @@ class App:
         curses.curs_set(0)
         curses.noecho()
 
+        self.__is_exit_requested = False
         self.on_enter(self._screen)
-        self._is_running = True
 
         return self
 
@@ -115,18 +115,25 @@ class App:
             *args: Exception information (unused).
 
         """
-        self._is_running = False
         self.on_exit(self._screen)
         curses.endwin()
 
-    def is_running(self) -> bool:
-        """Check if the application is currently running.
+    def request_exit(self) -> None:
+        """Request the application to exit.
+
+        Sets the exit flag to True, which will cause the application
+        to exit on the next update cycle.
+        """
+        self.__is_exit_requested = True
+
+    def is_exit_requested(self) -> bool:
+        """Check if an exit has been requested.
 
         Returns:
-            True if the application is running, False otherwise.
+            True if exit has been requested, False otherwise.
 
         """
-        return self._is_running
+        return self.__is_exit_requested
 
     def update(self) -> None:
         """Update the application state and handle input.
@@ -134,18 +141,9 @@ class App:
         Call this method in your main loop to update the application state
         and handle keyboard input.
         """
-        if self._is_running:
-            self.on_update(self._screen)
-            self._screen.refresh()
-            time.sleep(1 / self._fps)
-
-    def exit(self) -> None:
-        """Signal the application to exit.
-
-        Sets the running state to False, which will cause the application
-        to exit on the next update cycle.
-        """
-        self._is_running = False
+        self.on_update(self._screen)
+        self._screen.refresh()
+        time.sleep(1 / self._fps)
 
     def on_enter(self, screen: Screen) -> None:
         """Handle entering the application context.
@@ -271,7 +269,7 @@ class ThreadedApp(App, Thread):
         This method is called automatically when the thread starts.
         It continuously calls update() while the application is running.
         """
-        while self.is_running():
+        while not self.is_exit_requested():
             self.update()
 
 
