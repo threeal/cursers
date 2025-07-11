@@ -24,18 +24,41 @@ class Screen:
     input handling, and display management.
     """
 
-    def __init__(self, *, keypad: bool = False) -> None:
+    def __init__(self, *, init: bool = True, keypad: bool = False) -> None:
         """Initialize the screen.
 
         Args:
+            init: Whether to initialize the screen immediately (default: True).
             keypad: Whether to enable arrow keys and function keys (default: False).
 
         """
-        self._stdscr = curses.initscr()
-        self._stdscr.nodelay(True)  # noqa: FBT003
+        self._stdscr = None
+        self._keypad = keypad
 
-        if keypad:
-            self._stdscr.keypad(True)  # noqa: FBT003
+        if init:
+            self.init()
+
+    def __del__(self) -> None:
+        self.cleanup()
+
+    def __enter__(self) -> Self:
+        self.init()
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        self.cleanup()
+
+    def init(self) -> None:
+        if self._stdscr is None:
+            self._stdscr = curses.initscr()
+            self._stdscr.nodelay(True)  # noqa: FBT003
+
+            if self._keypad:
+                self._stdscr.keypad(True)  # noqa: FBT003
+
+    def cleanup(self) -> None:
+        if self._stdscr is not None:
+            self._stdscr = None
 
     def get_key(self) -> int:
         """Get the next key from the input buffer.
@@ -99,12 +122,13 @@ class App:
             The application instance.
 
         """
-        self._screen = Screen(keypad=self._keypad)
-        curses.curs_set(0)
-        curses.noecho()
+        if self._screen is None:
+            self._screen = Screen(keypad=self._keypad)
+            curses.curs_set(0)
+            curses.noecho()
 
-        self.__is_exit_requested = False
-        self.on_enter(self._screen)
+            self._is_exit_requested = False
+            self.on_enter(self._screen)
 
         return self
 
@@ -115,8 +139,10 @@ class App:
             *args: Exception information (unused).
 
         """
-        self.on_exit(self._screen)
-        curses.endwin()
+        if self._screen is not None:
+            self.on_exit(self._screen)
+            self._screen.cleanup()
+            curses.endwin()
 
     def request_exit(self) -> None:
         """Request the application to exit.
@@ -124,7 +150,7 @@ class App:
         Sets the exit flag to True, which will cause the application
         to exit on the next update cycle.
         """
-        self.__is_exit_requested = True
+        self._is_exit_requested = True
 
     def is_exit_requested(self) -> bool:
         """Check if an exit has been requested.
@@ -133,7 +159,7 @@ class App:
             True if exit has been requested, False otherwise.
 
         """
-        return self.__is_exit_requested
+        return self._is_exit_requested
 
     def update(self) -> None:
         """Update the application state and handle input.
@@ -260,8 +286,8 @@ class ThreadedApp(App, Thread):
             *args: Exception information (unused).
 
         """
-        App.__exit__(self)
         Thread.__exit__(self)
+        App.__exit__(self)
 
     def run(self) -> None:
         """Run the update loop in the thread.
