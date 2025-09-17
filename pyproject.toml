@@ -36,8 +36,18 @@ build-backend = "hatchling.build"
 dev = [
   "lefthook>=1.11.14",
   "pydoctor>=25.4.0",
+  "pytest>=8.4.1",
+  "pytest-cov>=6.2.1",
   "ruff>=0.11.13",
 ]
+
+[tool.coverage.report]
+fail_under = 100
+omit = []
+
+[tool.coverage.run]
+branch = true
+source = ["cursers"]
 
 [tool.hatch.build.targets.sdist]
 include = ["src"]
@@ -55,3 +65,4 @@ ignore = ["COM812", "D203", "D213"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["D"]
+"tests/*" = ["D", "S101"]
